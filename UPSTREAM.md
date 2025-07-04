@@ -70,16 +70,3 @@ cd ../..
   }
 }
 ```
-
-3. TS config settings to resolve any type errors:
-
-```json
-{
-  "compilerOptions": {
-    "target": "es2015",
-    "lib": ["dom", "dom.iterable", "es6"],
-    "downlevelIteration": true
-  },
-  "exclude": ["node_modules", "vendor"]
-}
-```
