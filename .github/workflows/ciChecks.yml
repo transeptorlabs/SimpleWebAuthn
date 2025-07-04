@@ -5,9 +5,9 @@ name: CI Checks
 
 on:
   push:
-    branches: [master, beta]
+    branches: [feature/prf-support]
   pull_request:
-    branches: [master, beta]
+    branches: [feature/prf-support]
 
 jobs:
   unit_tests:

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # SimpleWebAuthn Build All Packages Script
-# This script builds all packages (server, browser, types) and makes them available for local npm installation
+# This script builds all packages (server, browser, types) and makes them available for local yarn/npm installation
 
 set -e  # Exit on any error
 
@@ -43,6 +43,11 @@ check_npm() {
         exit 1
     fi
     print_success "npm is installed: $(npm --version)"
+}
+
+install_dependencies() {
+    print_status "Installing dependencies..."
+    deno install
 }
 
 clean_builds() {
@@ -116,8 +121,8 @@ create_dist() {
     
     # Copy server package
     if [ -d "packages/server/npm" ]; then
-        cp -r packages/server/npm dist/@simplewebauthn-server
-        print_status "Copied server package to dist/@simplewebauthn-server"
+        cp -r packages/server/npm dist/@transeptor-labs-simplewebauthn-server
+        print_status "Copied server package to dist/@transeptor-labs-simplewebauthn-server"
     else
         print_error "Server package not found at packages/server/npm"
         exit 1
@@ -125,8 +130,8 @@ create_dist() {
     
     # Copy browser package
     if [ -d "packages/browser/npm" ]; then
-        cp -r packages/browser/npm dist/@simplewebauthn-browser
-        print_status "Copied browser package to dist/@simplewebauthn-browser"
+        cp -r packages/browser/npm dist/@transeptor-labs-simplewebauthn-browser
+        print_status "Copied browser package to dist/@transeptor-labs-simplewebauthn-browser"
     else
         print_error "Browser package not found at packages/browser/npm"
         exit 1
@@ -141,6 +146,7 @@ main() {
     # Check prerequisites
     check_deno
     check_npm
+    install_dependencies
     
     # Clean previous builds
     clean_builds
@@ -155,8 +161,6 @@ main() {
     
     print_success "Build completed successfully!"
     print_status "Packages are available in the 'dist' directory"
-    print_status "To install locally, run: cd dist && npm install"
-    print_status "Or from your project: npm install $(pwd)/dist"
 }
 
-main "$@" 
+main "$@"
