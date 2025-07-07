@@ -147,3 +147,15 @@ Deno.test('should treat string challenges as UTF-8 strings', async () => {
     '44GT44KT44Gr44Gh44Gv',
   );
 });
+
+Deno.test('should set prf extension if specified', async () => {
+  const prfInput = {
+    eval: { first: new Uint8Array([1, 2, 3]) },
+    evalByCredential: { 'cred1': { first: new Uint8Array([4, 5, 6]) } },
+  };
+  const options = await generateAuthenticationOptions({
+    rpID,
+    extensions: { prf: prfInput },
+  });
+  assertEquals(options.extensions?.prf, prfInput);
+});

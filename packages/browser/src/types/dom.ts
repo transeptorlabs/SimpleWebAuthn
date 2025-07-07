@@ -50,12 +50,16 @@ export interface AuthenticationExtensionsClientInputs {
     credProps?: boolean;
     hmacCreateSecret?: boolean;
     minPinLength?: boolean;
+    /** [W3C WebAuthn Level 3 Specification Reference](https://w3c.github.io/webauthn/#prf-extension) */
+    prf?: AuthenticationExtensionsPRFInputs;
 }
 
 export interface AuthenticationExtensionsClientOutputs {
     appid?: boolean;
     credProps?: CredentialPropertiesOutput;
     hmacCreateSecret?: boolean;
+    /** [W3C WebAuthn Level 3 Specification Reference](https://w3c.github.io/webauthn/#prf-extension) */
+    prf?: AuthenticationExtensionsPRFOutputs;
 }
 
 export interface AuthenticatorSelectionCriteria {
@@ -371,3 +375,21 @@ export type KeyType = "private" | "public" | "secret";
 export type HashAlgorithmIdentifier = AlgorithmIdentifier;
 export type NamedCurve = string;
 export type BigInteger = Uint8Array;
+
+/** [W3C WebAuthn Level 3 Specification Reference](https://w3c.github.io/webauthn/#prf-extension) */
+export interface AuthenticationExtensionsPRFInputs {
+    eval?: AuthenticationExtensionsPRFValues;
+    evalByCredential?: Record<string, AuthenticationExtensionsPRFValues>;
+}
+
+/** [W3C WebAuthn Level 3 Specification Reference](https://w3c.github.io/webauthn/#prf-extension) */
+export interface AuthenticationExtensionsPRFValues {
+    first: BufferSource;
+    second?: BufferSource;
+}
+
+/** [W3C WebAuthn Level 3 Specification Reference](https://w3c.github.io/webauthn/#prf-extension) */
+export interface AuthenticationExtensionsPRFOutputs {
+    enabled?: boolean;
+    results?: AuthenticationExtensionsPRFValues;
+}

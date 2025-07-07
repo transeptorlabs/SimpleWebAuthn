@@ -386,3 +386,17 @@ Deno.test('should map "remoteDevice" authenticator preference to hint and attach
   assertEquals(options.hints, ['hybrid']);
   assertEquals(options.authenticatorSelection?.authenticatorAttachment, 'cross-platform');
 });
+
+Deno.test('should set prf extension if specified', async () => {
+  const prfInput = {
+    eval: { first: new Uint8Array([1, 2, 3]) },
+    evalByCredential: { 'cred1': { first: new Uint8Array([4, 5, 6]) } },
+  };
+  const options = await generateRegistrationOptions({
+    rpName: 'SimpleWebAuthn',
+    rpID: 'not.real',
+    userName: 'usernameHere',
+    extensions: { prf: prfInput },
+  });
+  assertEquals(options.extensions?.prf, prfInput);
+});

@@ -399,6 +399,38 @@ describe('Method: startRegistration', () => {
 
     stubConsoleWarn.restore();
   });
+
+  it('should send prf extension to authenticator if present in options', async () => {
+    const prfInput = {
+      eval: { first: new Uint8Array([1, 2, 3]) },
+      evalByCredential: { 'cred1': { first: new Uint8Array([4, 5, 6]) } },
+    };
+    const extensions: AuthenticationExtensionsClientInputs = {
+      prf: prfInput,
+    };
+    const optsWithExts = { ...goodOpts1, extensions };
+    await startRegistration({ optionsJSON: optsWithExts });
+    const args = createSpy.calls.at(0)?.args[0] as CredentialCreationOptions;
+    const argsPublicKey = args.publicKey!;
+    assertEquals(argsPublicKey.extensions?.prf, prfInput);
+  });
+
+  it('should include prf extension results', async () => {
+    const prfOutput = {
+      enabled: true,
+      results: { first: new Uint8Array([7, 8, 9]) },
+    };
+    const extResults: AuthenticationExtensionsClientOutputs = {
+      prf: prfOutput,
+    };
+    // @ts-ignore
+    globalThis.navigator.credentials.create = async () => ({
+      response: {},
+      getClientExtensionResults: () => extResults,
+    });
+    const response = await startRegistration({ optionsJSON: goodOpts1 });
+    assertEquals(response.clientExtensionResults.prf, prfOutput);
+  });
 });
 
 describe('WebAuthnError', () => {

@@ -112,4 +112,59 @@ outputSourceFile.addInterfaces(
 outputSourceFile.addTypeAliases(
   resolvedStructures.filter(Structure.isTypeAlias),
 );
+
+// Extend AuthenticationExtensionsClientInputs and AuthenticationExtensionsClientOutputs with PRF extension
+// Run : deno task extract-dom-types then deno task codegen
+const extClientInputs = outputSourceFile.getInterface('AuthenticationExtensionsClientInputs');
+if (extClientInputs) {
+  extClientInputs.addProperty({
+    name: 'prf?',
+    type: 'AuthenticationExtensionsPRFInputs',
+    docs: ['[W3C WebAuthn Level 3 Specification Reference](https://w3c.github.io/webauthn/#prf-extension)'],
+  });
+}
+
+const extClientOutputs = outputSourceFile.getInterface('AuthenticationExtensionsClientOutputs');
+if (extClientOutputs) {
+  extClientOutputs.addProperty({
+    name: 'prf?',
+    type: 'AuthenticationExtensionsPRFOutputs',
+    docs: ['[W3C WebAuthn Level 3 Specification Reference](https://w3c.github.io/webauthn/#prf-extension)'],
+  });
+}
+
+if (!outputSourceFile.getInterface('AuthenticationExtensionsPRFInputs')) {
+  outputSourceFile.addInterface({
+    name: 'AuthenticationExtensionsPRFInputs',
+    isExported: true,
+    docs: ['[W3C WebAuthn Level 3 Specification Reference](https://w3c.github.io/webauthn/#prf-extension)'],
+    properties: [
+      { name: 'eval?', type: 'AuthenticationExtensionsPRFValues' },
+      { name: 'evalByCredential?', type: 'Record<string, AuthenticationExtensionsPRFValues>' },
+    ],
+  });
+}
+if (!outputSourceFile.getInterface('AuthenticationExtensionsPRFValues')) {
+  outputSourceFile.addInterface({
+    name: 'AuthenticationExtensionsPRFValues',
+    isExported: true,
+    docs: ['[W3C WebAuthn Level 3 Specification Reference](https://w3c.github.io/webauthn/#prf-extension)'],
+    properties: [
+      { name: 'first', type: 'BufferSource' },
+      { name: 'second?', type: 'BufferSource' },
+    ],
+  });
+}
+if (!outputSourceFile.getInterface('AuthenticationExtensionsPRFOutputs')) {
+  outputSourceFile.addInterface({
+    name: 'AuthenticationExtensionsPRFOutputs',
+    isExported: true,
+    docs: ['[W3C WebAuthn Level 3 Specification Reference](https://w3c.github.io/webauthn/#prf-extension)'],
+    properties: [
+      { name: 'enabled?', type: 'boolean' },
+      { name: 'results?', type: 'AuthenticationExtensionsPRFValues' },
+    ],
+  });
+}
+
 outputSourceFile.saveSync();
